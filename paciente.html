@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datos Cliente Formulario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <script src="https://kit.fontawesome.com/59d48a5806.js" crossorigin="anonymous"></script>
+  <script src="common.js"></script>
+
+  <style>
+    .is-invalid {
+      border-color: red;
+    }
+    .logo-circle {
+    width: 100%;  /* Ajusta según el tamaño deseado */
+    height: 100%; /* Debe ser igual al ancho para formar un círculo perfecto */
+    object-fit: cover;
+    border-radius: 50%;
+    padding: 0px; /* Añade un poco de espacio alrededor del logo */
+}
+  </style>
+</head>
+
+<body>
+  <div class="container mt-2">
+    <div class="row">
+      <div class="col-md-6">
+       <center><img src="/img/logo.png" class="img-fluid logo-circle" alt="Logo" /></center>
+      </div>
+      <div class="col-md-6">
+        <h2>Ingrese los datos del paciente</h2>
+        <form id="datosClienteFormulario">
+          <div class="form-group mb-3">
+            <label><i class="fas fa-address-card"></i> Cédula:</label>
+            <input type="text" class="form-control" name="cedula" id="cedula" pattern="[0-9]{10}" inputmode="numeric"
+              maxlength="10" required />
+          </div>
+          <div class="form-group mb-3">
+            <label><i class="fas fa-user"></i> Nombre:</label>
+            <input type="text" class="form-control" name="nombre" id="nombre" inputmode="text" maxlength="50"
+              required />
+          </div>
+          <div class="form-group mb-3">
+            <label><i class="fas fa-user"></i> Apellido:</label>
+            <input type="text" class="form-control" name="apellido" id="apellido" inputmode="text" maxlength="50"
+              required />
+          </div>
+          <div class="form-group mb-3">
+            <label><i class="fas fa-envelope"></i> Correo:</label>
+            <input type="email" class="form-control" name="correo" id="correo" inputmode="email" maxlength="50"
+              required />
+          </div>
+          <div class="form-group mb-3">
+            <label><i class="fas fa-calendar"></i> Fecha de Nacimiento:</label>
+            <input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" required />
+          </div>
+          <div class="form-group mb-3">
+            <label><i class="fas fa-phone"></i> Teléfono:</label>
+            <input type="text" class="form-control" name="telefono" id="telefono" pattern="[0-9]{10}"
+              inputmode="numeric" maxlength="10" required />
+          </div>
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary" style="margin-bottom: 12px;">
+              Siguiente <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Controladores de eventos para filtrar caracteres no deseados
+    const cedulaInput = document.getElementById("cedula");
+    cedulaInput.addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    });
+
+    const nombreInput = document.getElementById("nombre");
+    nombreInput.addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(
+        /[^A-ZÁÉÍÓÚÜÑ a-záéíóúüñ]/g,
+        ""
+      );
+    });
+
+    const apellidoInput = document.getElementById("apellido");
+    apellidoInput.addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(
+        /[^A-ZÁÉÍÓÚÜÑ a-záéíóúüñ]/g,
+        ""
+      );
+    });
+
+    const correoInput = document.getElementById("correo");
+    correoInput.addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^@\.\w-]/g, "");
+    });
+
+    const telefonoInput = document.getElementById("telefono");
+    telefonoInput.addEventListener("input", function (e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    });
+
+    document
+      .getElementById("datosClienteFormulario")
+      .addEventListener("submit", function (event) {
+        event.preventDefault(); // Evitar el envío del formulario
+
+        let formIsValid = true;
+        const cedulaInput = document.getElementById("cedula");
+        const nombreInput = document.getElementById("nombre");
+        const apellidoInput = document.getElementById("apellido");
+        const correoInput = document.getElementById("correo");
+        const fechaNacimientoInput =
+          document.getElementById("fechaNacimiento");
+        const telefonoInput = document.getElementById("telefono");
+
+        // Validación de cédula
+        if (
+          cedulaInput.value.length !== 10 ||
+          !/^\d{10}$/.test(cedulaInput.value)
+        ) {
+          cedulaInput.classList.add("is-invalid");
+          formIsValid = false;
+        } else {
+          cedulaInput.classList.remove("is-invalid");
+        }
+
+        // Validación de nombre y apellido
+        const nombreApellidoRegex =
+          /^[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ]+(\s[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ]+)*$/;
+        if (!nombreApellidoRegex.test(nombreInput.value)) {
+          nombreInput.classList.add("is-invalid");
+          formIsValid = false;
+        } else {
+          nombreInput.classList.remove("is-invalid");
+        }
+
+        if (!nombreApellidoRegex.test(apellidoInput.value)) {
+          apellidoInput.classList.add("is-invalid");
+          formIsValid = false;
+        } else {
+          apellidoInput.classList.remove("is-invalid");
+        }
+
+        // Validación de correo
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(correoInput.value)) {
+          correoInput.classList.add("is-invalid");
+          formIsValid = false;
+        } else {
+          correoInput.classList.remove("is-invalid");
+        }
+
+        // Validación de teléfono
+        if (
+          telefonoInput.value.length !== 10 ||
+          !/^\d{10}$/.test(telefonoInput.value)
+        ) {
+          telefonoInput.classList.add("is-invalid");
+          formIsValid = false;
+        } else {
+          telefonoInput.classList.remove("is-invalid");
+        }
+
+        // Validación de campos vacíos
+        const inputs = [
+          cedulaInput,
+          nombreInput,
+          apellidoInput,
+          correoInput,
+          fechaNacimientoInput,
+          telefonoInput,
+        ];
+        inputs.forEach((input) => {
+          if (input.value.trim() === "") {
+            input.classList.add("is-invalid");
+            formIsValid = false;
+          }
+        });
+
+        if (formIsValid) {
+          window.location.href = "periodontograma.html";
+        } else {
+          alert("Por favor, complete todos los campos correctamente.");
+        }
+      });
+
+
+    document.getElementById("datosClienteFormulario").addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const cedula = document.getElementById("cedula").value;
+      const nombre = document.getElementById("nombre").value;
+      const apellido = document.getElementById("apellido").value;
+      const correo = document.getElementById("correo").value;
+      const fechaNacimiento = document.getElementById("fechaNacimiento").value;
+      const telefono = document.getElementById("telefono").value;
+
+      const pacienteParams = `?cedula=${cedula}&nombre=${nombre}&apellido=${apellido}&correo=${correo}&fechaNacimiento=${fechaNacimiento}&telefono=${telefono}`;
+
+      window.location.href = "periodontograma.html" + pacienteParams;
+    });
+
+
+  </script>
+</body>
+
+</html>
